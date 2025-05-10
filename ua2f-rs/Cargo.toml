@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2025 AyaSanae
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "ua2f-rs"
+version = "0.9.0"
+edition = "2024"
+authors.workspace = true
+license.workspace = true
+description.workspace = true
+
+[dependencies]
+ua2f-rs-common = { path = "../ua2f-rs-common", features = ["user"] }
+network-types = {workspace = true}
+toml = {workspace = true}
+xsk-rs = {workspace = true}
+socket2 = {workspace = true}
+dirs = {workspace = true}
+ipnet = {workspace = true}
+pnet = {workspace = true}
+anyhow = { workspace = true, default-features = true }
+aya = { workspace = true,default-features = true, features = ["async_tokio"]}
+aya-log = { workspace = true }
+env_logger = { workspace = true }
+libc = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true, features = ["derive"]}
+clap = { workspace = true, default-features = true, features = ["derive","cargo","std"] }
+tokio = { workspace = true, features = [
+    "macros",
+    "rt",
+    "rt-multi-thread",
+    "net",
+    "signal",
+    "time"
+] }
+
+[build-dependencies]
+anyhow = { workspace = true }
+aya-build = { workspace = true }
+
+ua2f-rs-ebpf = { path = "../ua2f-rs-ebpf" }
+
+[[bin]]
+name = "ua2f-rs"
+path = "src/main.rs"

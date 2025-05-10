@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: 2025 AyaSanae
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+[workspace]
+resolver = "2"
+members = [
+    "ua2f-rs",
+    "ua2f-rs-common",
+    "ua2f-rs-ebpf",
+]
+default-members = ["ua2f-rs", "ua2f-rs-common"]
+
+[workspace.package]
+license = "GPL-3.0"
+version = "0.9.0"
+authors = ["AyaSanae"]
+description = "An eBPF-based program for modifying HTTP packet User-Agents"
+
+[workspace.dependencies]
+ipnet = "2.11.0"
+network-types = "0.0.8"
+dirs = "6.0.0"
+pnet = "0.35.0"
+toml = "0.8.22"
+socket2 = "0.5.9"
+xsk-rs = "0.7.0"
+aya = { version = "0.13.1", features = ["async_tokio"] }
+aya-build = "0.1.2"
+aya-ebpf = "0.1.1"
+aya-log = "0.2.1"
+aya-log-ebpf = "0.1.1"
+anyhow = "1.0.98"
+clap = { version = "4.5.37", features = ["std","derive","cargo"] }
+env_logger = "0.11.8"
+libc = "0.2.172"
+log = "0.4.27"
+tokio = "1.45.0"
+which = "7.0.3"
+serde = { version = "1.0.219", features = ["derive"]}
+
+[profile.release.package.ua2f-rs-ebpf]
+debug = false
+codegen-units = 1
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+strip = true

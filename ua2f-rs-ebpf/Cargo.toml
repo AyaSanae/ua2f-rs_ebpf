@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2025 AyaSanae
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "ua2f-rs-ebpf"
+version = "0.9.0"
+edition = "2024"
+
+[dependencies]
+ua2f-rs-common = { path = "../ua2f-rs-common" }
+
+aya-ebpf = { workspace = true }
+aya-log-ebpf = { workspace = true }
+
+network-types = {workspace = true}
+
+[build-dependencies]
+which = { workspace = true }
+
+[[bin]]
+name = "tc_ebpf"
+path = "src/tc/main.rs"
+
+[[bin]]
+name = "xdp_ebpf"
+path = "src/xdp/main.rs"

@@ -1,0 +1,41 @@
+name: ci-build
+
+on:
+  push:
+    tags:
+      - 'v*'  # 当推送以v开头的tag时触发
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  amd64-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: setup env
+      run: |
+          sudo apt update
+          sudo apt install libelf-dev libpcap-dev
+          
+    - name: Setup rust toolchains
+      run: |
+        rustup install stable
+        rustup toolchain install nightly --component rust-src
+        cargo install bpf-linker
+      
+    - name: release build
+      run: | 
+        cargo build --release
+        mv target/release/ua2f-rs target/release/ua2f-rs_amd64
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          target/release/ua2f-rs_amd64
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
