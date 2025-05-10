@@ -5,9 +5,10 @@
 ### HTTP UA modifier using eBPF
 ### 基于eBPF实现的HTTP User-Agent修改程序
 
-![Downloads](https://img.shields.io/github/downloads/AyaSanae/%20ua2f-rs_ebpf/total?style=for-the-badge&logo=Rust)
+![Downloads](https://img.shields.io/github/downloads/AyaSanae/ua2f-rs_ebpf/total?style=for-the-badge&logo=Rust)
 
 </div>
+
 [什么是eBPF?](https://ebpf.io/what-is-ebpf/#what-is-ebpf)
 
 ## 注意！！
@@ -120,6 +121,29 @@ cargo build --release
 
 在香橙派3B Ubuntu 22.04.4 LTS aarch64 (CPU:RK3566)（内核版本5.10)上测试正常运行.
 
+可以先不给局域网内网站服务器设为filter_ip,简单开个http服务器
+
+如:python的http.server或者rust的miniserve
+
+```
+python3 -m http.server 8000
+或者
+miniserve -p 8000
+```
+
+然后在服务端上挂着
+
+```
+sudo tcpdump -tttt -s0 -X -vv tcp -i eno1 dst port 8000
+```
+
+再在客户端:
+
+```
+curl 服务端ip:8000
+
+```
+就可以在服务端的tcpdump输出看到curl的UA被替换为FFFF...
 
 简单压力测试:
 
