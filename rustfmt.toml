@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2025 AyaSanae
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+group_imports = "StdExternalCrate"
+imports_granularity = "Crate"
+reorder_imports = true
+unstable_features = true

@@ -1,0 +1,11 @@
+#SPDX-FileCopyrightText: 2025 AyaSanae
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+[target.bpfel-unknown-none]
+linker = "bpf-linker"
+rustflags = [
+  "-C", "panic=abort",
+  "-C", "link-arg=--btf",
+  "-C", "link-arg=--strip=release"
+]
