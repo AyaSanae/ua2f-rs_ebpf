@@ -48,7 +48,23 @@ zcat /proc/config.gz 2>/dev/null | awk '
     }'
 ```
 
-## 快速开始
+## 依赖
+
+如果你使用Release你需要确保你有:
+```
+Arch: libelf zlib gcc-libs glibc zstd
+```
+
+```
+Debian/Ubuntu: libelf1 zlib1g libgcc-s1 libc6 libzstd1
+```
+
+如果你是arm64 ubuntu,且内核版本小于6.6.0,你需要:
+```
+libmnl0 libnetfilter-queue1 libnfnetlink0
+```
+
+## 开始
 
 ```
 sudo -E ua2f-rs -i eth1 --ttl 64
