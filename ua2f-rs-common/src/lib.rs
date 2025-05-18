@@ -4,7 +4,15 @@
 
 #![no_std]
 
+use core::{
+    error::Error,
+    fmt::{self, Display},
+};
+
 pub const USER_AGENT_SIZE: usize = 12; //"User-Agent: ".len()
+
+pub const RX_VETH: &str = "ua2f_veth_rx";
+pub const TX_VETH: &str = "ua2f_veth_tx";
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -14,12 +22,24 @@ pub struct PacketLog {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub enum EbpfError {
     RedirectErr,
     GetIfIndexErr,
     GetUserTTLErr,
 }
+
+impl Display for EbpfError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            EbpfError::RedirectErr => write!(f, "Failed to redirect packet to {RX_VETH}"),
+            EbpfError::GetIfIndexErr => write!(f, "Failed to get attached ifindex!"),
+            EbpfError::GetUserTTLErr => write!(f, "Failed to get user TTL value"),
+        }
+    }
+}
+
+impl Error for EbpfError {}
 
 #[repr(C, packed)]
 pub struct MetaData {

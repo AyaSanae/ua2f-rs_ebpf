@@ -16,10 +16,10 @@ use libc::atexit;
 use log::{info, warn};
 use tokio::{signal, time::interval};
 use ua2f_rs::{
-    RX_VETH, TX_VETH, af_xdp::af_xdp_init, config::create_or_read_config, ebpf::*,
-    get_count_packets, modify::process_packet,
+    af_xdp::af_xdp_init, config::create_or_read_config, ebpf::*, get_count_packets,
+    modify::process_packet,
 };
-use ua2f_rs_common::EbpfError;
+use ua2f_rs_common::{RX_VETH, TX_VETH};
 
 #[derive(Parser)]
 #[command(name = "ua2f-rs")]
@@ -118,32 +118,39 @@ async fn main() -> Result<(), anyhow::Error> {
             );
         }
     });
+    let mut catching_bpf_error_handle =
+        tokio::spawn(async move { catching_bpf_error("ERR_RINGBUF", tc_bpf).await });
 
-    tokio::select! {
-        res = &mut process_packet_handle  => {
+    let res = tokio::select! {
+        res = &mut process_packet_handle => {
             match res{
-                Ok(inner_result) => {
-                inner_result.map_err(|e| anyhow!("Packet processing error: {}", e))
+                Ok(process_packet_result) => {
+                    process_packet_result.map_err(|e| anyhow!("Packet processing error: {}", e))
             },
-                Err(e) => Err(anyhow!("failed to precess packet: {}",e)),
+                Err(handle_error) => Err(anyhow!("failed to precess packet: {}",handle_error)),
             }
 
-    },
-        res = catching_bpf_error("ERR_RINGBUF", &tc_bpf) => {
-            match res {
-                Ok(ebpf_err) => match ebpf_err {
-                    EbpfError::GetIfIndexErr => Err(anyhow!("[TC ebpf]: Unable to get {} ifindex!",TX_VETH)),
-                    EbpfError::RedirectErr => Err(anyhow!("[TC ebpf]: packet redirect Error!")),
-                    EbpfError::GetUserTTLErr => Err(anyhow!("[TC ebpf]: Failed to get user ttl !")),
+        },
+        res = &mut catching_bpf_error_handle => {
+            match res{
+                Ok(ebpf_error) => {
+                    ebpf_error.map_err(|e| anyhow!("eBPF program error: {e}"))
                 },
-                Err(e) => Err(e),
+                Err(handle_error) => Err(anyhow!("failed to catching ebpf error {handle_error}")),
             }
         },
         _ = signal::ctrl_c() => {
             info!("Received Ctrl+C, Exiting...");
              std::process::exit(1);
         },
-    }
+    };
+
+    if let Err(e) = res {
+        eprintln!("{e}");
+        std::process::exit(-1);
+    };
+
+    std::process::exit(-1);
 }
 
 fn create_veth() -> Result<u32, anyhow::Error> {

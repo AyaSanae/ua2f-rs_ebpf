@@ -18,9 +18,7 @@ use ipnet::Ipv4Net;
 use log::info;
 use pnet::datalink;
 use tokio::io::unix::AsyncFd;
-use ua2f_rs_common::EbpfError;
-
-use crate::RX_VETH;
+use ua2f_rs_common::{EbpfError, RX_VETH};
 
 pub fn ebpf_init(
     xsk_fd: RawFd,
@@ -103,21 +101,19 @@ pub fn get_ifindex(ifname: &str) -> Result<u32, anyhow::Error> {
         .index)
 }
 
-pub async fn catching_bpf_error(ring_buf: &str, bpf: &Ebpf) -> Result<EbpfError, anyhow::Error> {
+pub async fn catching_bpf_error(ring_buf: &str, bpf: Ebpf) -> anyhow::Result<()> {
     let mut ring_buf = RingBuf::try_from(bpf.map(ring_buf).unwrap()).unwrap();
     let async_fd = AsyncFd::new(ring_buf.as_raw_fd())?;
     let _ = async_fd.readable().await?;
 
-    if let Some(e) = ring_buf.next() {
-        if e.len() == std::mem::size_of::<EbpfError>() {
-            let error = unsafe { std::ptr::read(e.as_ptr() as *const EbpfError) };
-            return Ok(error);
-        } else {
-            return Err(anyhow::anyhow!("Invalid EbpfError size in ring buffer"));
+    loop {
+        if let Some(e) = ring_buf.next() {
+            if e.len() == std::mem::size_of::<EbpfError>() {
+                let error = unsafe { std::ptr::read(e.as_ptr() as *const EbpfError) };
+                return Err(error.into());
+            } else {
+                return Err(anyhow::anyhow!("Invalid EbpfError size in ring buffer"));
+            }
         }
     }
-
-    Err(anyhow::anyhow!(
-        "Failed to catch bpf error: ERR_RINGBUFF is void"
-    ))
 }

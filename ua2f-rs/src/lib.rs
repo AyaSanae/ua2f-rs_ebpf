@@ -9,9 +9,6 @@ pub mod config;
 pub mod ebpf;
 pub mod modify;
 
-pub const RX_VETH: &str = "ua2f_veth_rx";
-pub const TX_VETH: &str = "ua2f_veth_tx";
-
 static MODIFY_COUNT: AtomicU64 = AtomicU64::new(0);
 
 pub fn add_modify_count() {
