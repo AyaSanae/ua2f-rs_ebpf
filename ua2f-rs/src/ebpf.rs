@@ -32,14 +32,11 @@ pub fn ebpf_init(
         "/tc_ebpf"
     )))?;
 
-    info!(
-        "TC: redirect ifindex:{} pass to TC ebpf program",
-        tc_redirect_ifindex
-    );
+    info!("TC: redirect ifindex:{tc_redirect_ifindex} pass to TC ebpf program");
     let mut ifindex_list: Array<_, u32> = Array::try_from(tc_bpf.map_mut("IFINDEX").unwrap())?;
     ifindex_list.set(0, tc_redirect_ifindex, 0)?;
 
-    info!("TC: pass TTL:{} to TC ebpf program", ttl);
+    info!("TC: pass TTL:{ttl} to TC ebpf program");
     let mut user_ttl: Array<_, u8> = Array::try_from(tc_bpf.map_mut("USER_TTL").unwrap())?;
     user_ttl.set(0, ttl, 0)?;
 
@@ -79,7 +76,7 @@ pub fn ebpf_up(xdp: &mut Ebpf, tc: &mut Ebpf, attach_iface: &str) -> Result<(), 
     let _ = tc::qdisc_add_clsact(attach_iface);
     let program: &mut SchedClassifier = tc.program_mut("packet_filter").unwrap().try_into()?;
     program.load()?;
-    info!("TC: Attach to {}", attach_iface);
+    info!("TC: Attach to {attach_iface}");
     program.attach(attach_iface, TcAttachType::Egress)?;
     info!("TC: start!");
 

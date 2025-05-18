@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 #![no_std]
 #![no_main]
-
 mod tc_lib;
 
 use aya_ebpf::{

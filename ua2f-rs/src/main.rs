@@ -91,11 +91,11 @@ async fn main() -> Result<(), anyhow::Error> {
     let (mut tc_bpf, mut xdp_bpf) =
         ebpf_init(xsk_fd, ua2f_veth_tx_ifindex, filter_ip, filter_ip_cidr, ttl)?;
     if let Err(e) = EbpfLogger::init(&mut tc_bpf) {
-        warn!("failed to initialize TC eBPF logger: {}", e);
+        warn!("failed to initialize TC eBPF logger: {e}");
     }
 
     if let Err(e) = EbpfLogger::init(&mut xdp_bpf) {
-        warn!("failed to initialize XDP eBPF logger: {}", e);
+        warn!("failed to initialize XDP eBPF logger: {e}");
     }
 
     ebpf_up(&mut xdp_bpf, &mut tc_bpf, &attach_iface)?;
@@ -163,12 +163,12 @@ fn create_veth() -> Result<u32, anyhow::Error> {
     Command::new("ip")
         .args(["link", "set", "dev", TX_VETH, "up"])
         .status()
-        .context(format! {"Failed to set up {}",TX_VETH})?;
+        .context(format! {"Failed to set up {TX_VETH}"})?;
 
     Command::new("ip")
         .args(["link", "set", "dev", RX_VETH, "up"])
         .status()
-        .context(format! {"Failed to set up {}",RX_VETH})?;
+        .context(format! {"Failed to set up {RX_VETH}"})?;
 
     get_ifindex(TX_VETH)
 }
