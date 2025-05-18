@@ -80,12 +80,13 @@ attach_iface用于指定附加的接口,filter_ip可以指定被过滤的ip,如�
 Usage: ua2f-rs [OPTIONS]
 
 Options:
-  -i, --iface <IFACE>      
-  -c, --config <CONFIG>    
-      --ttl <TTL>          
-      --verbose <VERBOSE>  [possible values: true, false]
-  -h, --help               Print help
-  -V, --version            Print version
+  -i, --iface <IFACE>                    
+  -c, --config <CONFIG>                  
+      --ttl <TTL>                        
+      --count-interval <COUNT_INTERVAL>  
+      --verbose <VERBOSE>                [possible values: true, false]
+  -h, --help                             Print help
+  -V, --version                          Print version
 ```
 
 ## 配置文件
@@ -110,6 +111,7 @@ filter_ip = [
     "224.0.0.0/4"       
 ]
 ttl = 64
+count_interval = 1800
 ```
 
 ## 特性
