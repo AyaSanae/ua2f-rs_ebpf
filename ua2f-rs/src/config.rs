@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub attach_iface: String,
     pub filter_ip: Vec<String>,
+    pub count_interval: u64,
     pub ttl: u8,
 }
 
@@ -24,6 +25,7 @@ impl Default for Config {
             attach_iface: "eno1".to_string(),
             filter_ip: vec![],
             ttl: 64u8,
+            count_interval: 1800,
         }
     }
 }

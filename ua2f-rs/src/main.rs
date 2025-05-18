@@ -32,6 +32,8 @@ struct Opt {
     #[clap(long)]
     ttl: Option<u8>,
     #[clap(long)]
+    count_interval: Option<u64>,
+    #[clap(long)]
     verbose: Option<bool>,
 }
 
@@ -56,6 +58,11 @@ async fn main() -> Result<(), anyhow::Error> {
     let ttl = match &opt.ttl {
         Some(user_ttl) => *user_ttl,
         None => file_config.ttl,
+    };
+
+    let count_interval = match &opt.count_interval {
+        Some(count_interval) => *count_interval,
+        None => file_config.count_interval,
     };
 
     let attach_ifindex = get_ifindex(&attach_iface)?;
@@ -105,7 +112,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let mut process_packet_handle =
         tokio::spawn(async move { process_packet(attach_ifindex, af_xdp) });
     tokio::spawn(async move {
-        let mut interval = interval(Duration::from_secs(1800));
+        let mut interval = interval(Duration::from_secs(count_interval));
         let xdp_count: Array<_, u64> =
             Array::try_from(xdp_bpf.map_mut("HTTP_PACKET_COUNT").unwrap()).unwrap();
 
