@@ -1,13 +1,16 @@
-name: ci-build
+#SPDX-FileCopyrightText: 2025 AyaSanae
+#
+# SPDX-License-Identifier: GPL-3.0-only
 
+name: ci-build
 on:
   push:
-    tags:
-      - 'v*'  # 当推送以v开头的tag时触发
-
+    branches: ["master"]
+    tags: ["*"] 
+  pull_request:
+    branches: ["master"]
 env:
   CARGO_TERM_COLOR: always
-
 jobs:
   amd64-build:
     runs-on: ubuntu-latest
@@ -33,6 +36,7 @@ jobs:
         mv target/release/ua2f-rs target/release/ua2f-rs_amd64
 
     - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
         files: |
