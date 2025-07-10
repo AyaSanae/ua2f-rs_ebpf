@@ -13,7 +13,7 @@ default-members = ["ua2f-rs", "ua2f-rs-common"]
 
 [workspace.package]
 license = "GPL-3.0"
-version = "0.9.0"
+version = "1.0.0"
 authors = ["AyaSanae"]
 description = "An eBPF-based program for modifying HTTP packet User-Agents"
 
