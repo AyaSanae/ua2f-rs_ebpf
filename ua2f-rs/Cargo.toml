@@ -15,7 +15,7 @@ ua2f-rs-common = { path = "../ua2f-rs-common", features = ["user"] }
 network-types = {workspace = true}
 toml = {workspace = true}
 xsk-rs = {workspace = true}
-socket2 = {workspace = true}
+socket2 = {workspace = true,features = ["all"]}
 dirs = {workspace = true}
 ipnet = {workspace = true}
 pnet = {workspace = true}
