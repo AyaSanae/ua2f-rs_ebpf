@@ -35,7 +35,7 @@ clap = { version = "4.5.41", features = ["std","derive","cargo"] }
 env_logger = "0.11.8"
 libc = "0.2.174"
 log = "0.4.27"
-tokio = "1.46.1"
+tokio = "1.47.0"
 which = "8.0.0"
 serde = { version = "1.0.219", features = ["derive"]}
 
