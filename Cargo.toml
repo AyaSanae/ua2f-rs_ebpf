@@ -30,7 +30,7 @@ aya-build = "0.1.2"
 aya-ebpf = "0.1.1"
 aya-log = "0.2.1"
 aya-log-ebpf = "0.1.1"
-anyhow = "1.0.98"
+anyhow = "1.0.100"
 clap = { version = "4.5.41", features = ["std","derive","cargo"] }
 env_logger = "0.11.8"
 libc = "0.2.174"
