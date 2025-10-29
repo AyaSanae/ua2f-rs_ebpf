@@ -23,7 +23,7 @@ network-types = "0.0.8"
 dirs = "6.0.0"
 pnet = "0.35.0"
 toml = "0.9.2"
-socket2 = "0.6.0"
+socket2 = "0.6.1"
 xsk-rs = "0.7.0"
 aya = { version = "0.13.1", features = ["async_tokio"] }
 aya-build = "0.1.2"
